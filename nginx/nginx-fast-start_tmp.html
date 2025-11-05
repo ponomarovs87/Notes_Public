@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>nginx-fast-start.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%F0%9F%8C%90-%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE-nginx-%D1%81-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%B0%D0%BC%D0%B8">🌐 Руководство по Nginx с примерами</h1>
+<h2 id="%F0%9F%93%96-%D0%BE%D0%B3%D0%BB%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">📖 Оглавление</h2>
+<ul>
+<li><a href="#-%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE-nginx-%D1%81-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%B0%D0%BC%D0%B8">🌐 Руководство по Nginx с примерами</a>
+<ul>
+<li><a href="#-%D0%BE%D0%B3%D0%BB%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">📖 Оглавление</a></li>
+<li><a href="#%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-nginx">Что такое Nginx</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Пример конфигурации сайта</a>
+<ul>
+<li><a href="#a-%D1%84%D0%B0%D0%B9%D0%BB-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-etcnginxsites-enabledsiteua">a. Файл конфигурации: <code>/etc/nginx/sites-enabled/site.ua</code></a></li>
+<li><a href="#b-%D0%BF%D0%BE%D1%81%D0%BB%D0%B5-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">b. После изменения конфигурации:</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BD%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Добавление нового сайта</a></li>
+<li><a href="#%D1%83%D0%B4%D0%B0%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D0%B0%D1%80%D0%BE%D0%B3%D0%BE-%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Удаление старого сайта</a></li>
+<li><a href="#%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B">Полезные команды</a></li>
+</ul>
+</li>
+<li><a href="#%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8-%D0%B8-%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D1%8B">Ссылки и ресурсы</a></li>
+</ul>
+<hr>
+<h2 id="%D1%87%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-nginx">Что такое Nginx</h2>
+<p>Nginx — это <strong>высокопроизводительный веб-сервер и обратный прокси-сервер</strong>.</p>
+<ul>
+<li><em>По человечески: в зависимости от того что принаимет будет отдавать то что назначите в его файле</em></li>
+</ul>
+<p>Он умеет:</p>
+<ul>
+<li>Обслуживать статические файлы (HTML, CSS, JS) 🖼️</li>
+<li>Работать как обратный прокси для приложений ⚡</li>
+<li>Поддерживать SSL/TLS 🔒</li>
+<li>Балансировать нагрузку между несколькими серверами ⚖️</li>
+</ul>
+<hr>
+<h2 id="%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Пример конфигурации сайта</h2>
+<h4 id="a-%D1%84%D0%B0%D0%B9%D0%BB-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8-etcnginxsites-enabledsiteua">a. Файл конфигурации: <code>/etc/nginx/sites-enabled/site.ua</code></h4>
+<ul>
+<li><em>www.site.ua заменить на ваш домен соответственно сертификаты для https как получить <a href="#%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8-%D0%B8-%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D1%8B">отдельно</a></em></li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment"># http://www.site.ua/</span>
+
+<span class="hljs-section">server</span> {
+    <span class="hljs-attribute">listen</span> <span class="hljs-number">80</span>;
+    <span class="hljs-attribute">listen</span> [::]:<span class="hljs-number">80</span>;
+    <span class="hljs-attribute">server_name</span> site.ua www.site.ua;
+
+    <span class="hljs-comment"># редирект всех HTTP запросов на HTTPS</span>
+    <span class="hljs-attribute">return</span> <span class="hljs-number">301</span> https://<span class="hljs-variable">$host</span><span class="hljs-variable">$request_uri</span>;
+
+    <span class="hljs-comment"># выдача сайта закомментируй верхнюю строчку разакомментируй две нижних</span>
+    <span class="hljs-comment"># root /var/www/site.ua;</span>
+	<span class="hljs-comment"># index index.html;</span>
+}
+
+<span class="hljs-comment"># https://www.site.ua/</span>
+
+<span class="hljs-section">server</span> {
+    <span class="hljs-attribute">listen</span> <span class="hljs-number">443</span> ssl;
+    <span class="hljs-attribute">server_name</span> uvs.site.ua www.site.ua;
+
+    <span class="hljs-attribute">ssl_certificate</span> /etc/letsencrypt/live/site.ua/fullchain.pem;
+    <span class="hljs-attribute">ssl_certificate_key</span> /etc/letsencrypt/live/site.ua/privkey.pem;
+
+    <span class="hljs-attribute">root</span> /var/www/site.ua;
+    <span class="hljs-attribute">index</span> index.html index.htm;
+
+    <span class="hljs-comment"># пример вставленной локации то есть по адресу  https://www.site.ua/test/new_site/  будет индексная страница тестового сайта (осторожней с навигацией внутри тестового сайта !!!)</span>
+    
+    <span class="hljs-attribute">location</span> /test/new_site/ {
+        <span class="hljs-attribute">alias</span> /var/www/test/new_site/dist/;
+        <span class="hljs-attribute">index</span> index.html;
+    }
+
+    <span class="hljs-attribute">location</span> / {
+        <span class="hljs-attribute">try_files</span> <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ =<span class="hljs-number">404</span>;
+    }
+}
+
+<span class="hljs-comment"># Тестовый сайт (на порту 3000) http://www.site.ua:3000/</span>
+
+<span class="hljs-section">server</span> {
+    <span class="hljs-attribute">listen</span> <span class="hljs-number">3000</span>;
+    <span class="hljs-attribute">server_name</span> www.site.ua;
+
+    <span class="hljs-attribute">root</span> /var/www/test/new_site/dist/;
+    <span class="hljs-attribute">index</span> index.html;
+
+    <span class="hljs-attribute">location</span> / {
+        <span class="hljs-attribute">try_files</span> <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ =<span class="hljs-number">404</span>;
+    }
+}
+</div></code></pre>
+<ul>
+<li><em>http://www.site.ua:3000/ навигация будет нормальная но скорее всего в интернете вы сайт не откроете железный занавес оставил мало портов для пользования и 3000 часто у провайдеров заблокирован но при условии если создать внутреннюю приватную сеть с сервером вы откроете так как вы свой провайдер, но если захотите выйти на чужой сайт с другим портом будете подпадать пот провайдера сервера и его правила подробнее про <strong>Виртуальную Приватную Сеть</strong> читай <a href="#%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8-%D0%B8-%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D1%8B">отдельно</a></em></li>
+</ul>
+<h4 id="b-%D0%BF%D0%BE%D1%81%D0%BB%D0%B5-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D0%B8">b. После изменения конфигурации:</h4>
+<pre class="hljs"><code><div>sudo nginx -t   <span class="hljs-comment"># Проверка конфигурации</span>
+</div></code></pre>
+<ul>
+<li><em>важно проверять фаил конфигурации пока не перезагрузил (все работатет) в случае ошибки ляжет весь <strong>nginx</strong> а не один сайт</em></li>
+</ul>
+<pre class="hljs"><code><div>sudo systemctl reload nginx  <span class="hljs-comment"># Перезагрузка сервера</span>
+</div></code></pre>
+<p>Проверка работы сайта :</p>
+<pre class="hljs"><code><div>curl -I https://site.ua/<span class="hljs-built_in">test</span>/aleksandra/
+</div></code></pre>
+<h2 id="%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BD%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Добавление нового сайта</h2>
+<p>Создаем новый конфиг-файл:</p>
+<pre class="hljs"><code><div>sudo nano /etc/nginx/sites-available/my_new_site.conf
+</div></code></pre>
+<p>Пример содержимого:</p>
+<pre class="hljs"><code><div><span class="hljs-section">server</span> {
+    <span class="hljs-attribute">listen</span> <span class="hljs-number">443</span> ssl;
+    <span class="hljs-attribute">server_name</span> my_new_site.com www.my_new_site.com;
+
+    <span class="hljs-attribute">ssl_certificate</span> /etc/letsencrypt/live/my_new_site.com/fullchain.pem;
+    <span class="hljs-attribute">ssl_certificate_key</span> /etc/letsencrypt/live/my_new_site.com/privkey.pem;
+
+    <span class="hljs-attribute">root</span> /var/www/my_new_site.com;
+    <span class="hljs-attribute">index</span> index.html;
+
+    <span class="hljs-attribute">location</span> / {
+        <span class="hljs-attribute">try_files</span> <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ =<span class="hljs-number">404</span>;
+    }
+}
+</div></code></pre>
+<p>Создаем символическую ссылку:</p>
+<pre class="hljs"><code><div>sudo ln -s /etc/nginx/sites-available/my_new_site.conf /etc/nginx/sites-enabled/
+</div></code></pre>
+<p>Проверяем и перезагружаем Nginx:</p>
+<pre class="hljs"><code><div>sudo nginx -t
+</div></code></pre>
+<pre class="hljs"><code><div>sudo systemctl reload nginx
+</div></code></pre>
+<h2 id="%D1%83%D0%B4%D0%B0%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D0%B0%D1%80%D0%BE%D0%B3%D0%BE-%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Удаление старого сайта</h2>
+<p>Удаляем символическую ссылку из sites-enabled:</p>
+<pre class="hljs"><code><div>sudo rm /etc/nginx/sites-enabled/old_site.conf
+</div></code></pre>
+<p>(Опционально) Удаляем файл конфигурации:</p>
+<pre class="hljs"><code><div>sudo rm /etc/nginx/sites-available/old_site.conf
+</div></code></pre>
+<p>Перезагружаем Nginx:</p>
+<pre class="hljs"><code><div>sudo nginx -t
+</div></code></pre>
+<pre class="hljs"><code><div>sudo systemctl reload nginx
+</div></code></pre>
+<ul>
+<li><em>⚠️ Важно: сначала удаляйте символическую ссылку, потом файл, иначе можно случайно сломать сайт.</em></li>
+</ul>
+<h2 id="%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B">Полезные команды</h2>
+<pre class="hljs"><code><div>Команда                         ---&gt; Описание
+sudo nginx -t                   ---&gt; Проверка конфигурации
+sudo systemctl reload nginx	    ---&gt; Перезагрузка без остановки
+sudo systemctl restart nginx	---&gt; Полная перезагрузка
+sudo nginx -T	                ---&gt; Вывод всех конфигураций
+
+curl -I https://example.com	    ---&gt; Проверка ответа сервера
+</div></code></pre>
+<h1 id="%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8-%D0%B8-%D1%80%D0%B5%D1%81%D1%83%D1%80%D1%81%D1%8B">Ссылки и ресурсы</h1>
+<p>//НЕ работают!!! Пока еще!</p>
+<p><a href="https://nginx.org/ru/docs/">Официальная документация Nginx 🌐</a></p>
+<p><a href="">Let's Encrypt SSL 🔒</a></p>
+
+</body>
+</html>
