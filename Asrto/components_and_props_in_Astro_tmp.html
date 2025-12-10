@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>components_and_props_in_Astro.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%D0%BA%D0%B0%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D1%8E%D1%82-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D0%B8-%D0%BF%D1%80%D0%BE%D0%BF%D1%81%D1%8B-%D0%B2-%D0%B0%D1%81%D1%82%D1%80%D0%BE">Как работают компоненты и пропсы в Астро</h1>
+<h2 id="%D0%BE%D0%B3%D0%BB%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">Оглавление</h2>
+<ul>
+<li><a href="#%D0%BA%D0%B0%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D1%8E%D1%82-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D0%B8-%D0%BF%D1%80%D0%BE%D0%BF%D1%81%D1%8B-%D0%B2-%D0%B0%D1%81%D1%82%D1%80%D0%BE">Как работают компоненты и пропсы в Астро</a>
+<ul>
+<li><a href="#%D0%BE%D0%B3%D0%BB%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">Оглавление</a></li>
+</ul>
+</li>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0">Проблема</a></li>
+<li><a href="#%D1%86%D0%B5%D0%BB%D1%8C">Цель</a></li>
+<li><a href="#%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5">Решение</a>
+<ul>
+<li><a href="#%D0%BF%D1%80%D0%BE%D0%BF%D1%81%D1%8B-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Пропсы компонента</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B">Компоненты</a>
+<ul>
+<li><a href="#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Структура компонента</a></li>
+<li><a href="#%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Скрипт компонента</a></li>
+<li><a href="#%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Шаблон компонента</a></li>
+<li><a href="#%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%BD%D1%8B%D0%B9-%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD">Компонентный дизайн</a></li>
+<li><a href="#%D1%81%D0%BB%D0%BE%D1%82%D1%8B">Слоты</a></li>
+<li><a href="#%D0%B8%D0%BC%D0%B5%D0%BD%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D1%81%D0%BB%D0%BE%D1%82%D1%8B">Именованные слоты</a></li>
+<li><a href="#%D1%80%D0%B5%D0%B7%D0%B5%D1%80%D0%B2%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82-%D0%B4%D0%BB%D1%8F-%D1%81%D0%BB%D0%BE%D1%82%D0%BE%D0%B2">Резервный контент для слотов</a></li>
+<li><a href="#%D0%BF%D0%B5%D1%80%D0%B5%D0%BD%D0%BE%D1%81-%D1%81%D0%BB%D0%BE%D1%82%D0%BE%D0%B2">Перенос слотов</a></li>
+<li><a href="#html-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B">HTML-компоненты</a></li>
+</ul>
+</li>
+<li><a href="#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE-%D0%B3%D0%BB%D1%83%D0%B1%D0%B6%D0%B5-%D0%B2-%D0%BA%D1%80%D0%BE%D0%BB%D0%B8%D1%87%D1%8C%D1%8E-%D0%BD%D0%BE%D1%80%D1%83">Дополнительно (глубже в кроличью нору)</a>
+<ul>
+<li><a href="#fragments">Fragments</a></li>
+<li><a href="#setdirectives">set:directives</a>
+<ul>
+<li><a href="#%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2-%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%BE%D0%B2">Справочник директив шаблонов</a></li>
+<li><a href="#%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0">Правила</a></li>
+<li><a href="#%D0%BE%D0%B1%D1%89%D0%B8%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B">Общие директивы</a></li>
+<li><a href="#classlist">class:list</a></li>
+<li><a href="#sethtml">set:html</a></li>
+<li><a href="#settext">set:text</a></li>
+<li><a href="#clientdirectives">client:directives</a></li>
+<li><a href="#clientload">client:load</a></li>
+<li><a href="#clientidle">client:idle</a></li>
+<li><a href="#timeout">timeout</a></li>
+<li><a href="#clientvisible">client:visible</a></li>
+<li><a href="#clientvisiblerootmargin">client:visible={{rootMargin}}</a></li>
+<li><a href="#clientmedia">client:media</a></li>
+<li><a href="#clientonly">client:only</a></li>
+<li><a href="#%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B6%D0%B0%D0%B5%D0%BC%D0%BE%D0%B3%D0%BE-%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%BC%D0%BE%D0%B3%D0%BE">Отображение загружаемого содержимого</a></li>
+<li><a href="#%D0%B8%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%81%D0%BA%D0%B8%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B">Индивидуальные клиентские директивы</a></li>
+<li><a href="#%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0">Директивы сервера</a></li>
+<li><a href="#serverdefer">server:defer</a></li>
+<li><a href="#%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B-%D0%BF%D0%BE-%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82%D1%83-%D0%B8-%D1%81%D1%82%D0%B8%D0%BB%D1%8E">Директивы по скрипту и стилю</a></li>
+<li><a href="#isglobal">is:global</a></li>
+<li><a href="#isinline">is:inline</a></li>
+<li><a href="#definevars">define:vars</a></li>
+<li><a href="#%D1%80%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B">Расширенные директивы</a></li>
+<li><a href="#israw">is:raw</a></li>
+</ul>
+</li>
+<li><a href="#framework-components">framework-components</a></li>
+<li><a href="#dynamic-tags">dynamic-tags</a></li>
+<li><a href="#passing-components-to-mdx-content">passing-components-to-mdx-content</a></li>
+<li><a href="#requestidlecallback">requestIdleCallback</a></li>
+<li><a href="#requestidlecallback-method">requestIdleCallback-method</a></li>
+<li><a href="#addclientdirective-option">addclientdirective-option</a></li>
+<li><a href="#server-islands">server-islands</a></li>
+<li><a href="#global-styles">global-styles</a></li>
+<li><a href="#defer">defer</a></li>
+<li><a href="#client-side-scripts">client-side-scripts</a></li>
+<li><a href="#hydration">hydration</a></li>
+<li><a href="#xss">XSS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D1%8B-%D0%B4%D0%BB%D1%8F-%D1%81%D1%82%D0%B0%D1%82%D1%8C%D0%B8">Материалы для статьи</a></li>
+</ul>
+<h1 id="%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0">Проблема</h1>
+<pre class="hljs"><code><div>передача информации между файлами в Astro
+</div></code></pre>
+<h1 id="%D1%86%D0%B5%D0%BB%D1%8C">Цель</h1>
+<ul>
+<li>Разобраться с передачей пропсов</li>
+<li>Лучшие способы передачи</li>
+<li>Разбор компонентов в пропсах</li>
+</ul>
+<h1 id="%D1%80%D0%B5%D1%88%D0%B5%D0%BD%D0%B8%D0%B5">Решение</h1>
+<h2 id="%D0%BF%D1%80%D0%BE%D0%BF%D1%81%D1%8B-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Пропсы компонента</h2>
+<p>Компонент <strong>Astro</strong> может определять и принимать входные параметры — пропсы. Эти пропсы затем становятся доступными шаблону компонента для рендеринга HTML. Пропсы доступны в глобальном объекте <em><strong>Astro.props</strong></em> в вашем скрипте.</p>
+<p>Вот пример компонента, который получает пропсы <strong>greeting</strong> и <strong>name</strong>. Обратите внимание, что получаемые входные параметры деструктурированы из глобального объекта <em><strong>Astro.props</strong></em>.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-comment">// Применение: &lt;GreetingHeadline greeting="Привет" name="Партнёр" /&gt;</span>
+<span class="hljs-keyword">const</span> { greeting, name } = Astro.props;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>{greeting}, {name}!<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span></span>
+</div></code></pre>
+<p>Этот компонент при импорте и визуализации в других компонентах <strong>Astro</strong>, макетах или страницах может передавать эти параметры в качестве атрибутов:</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> GreetingHeadline <span class="hljs-keyword">from</span> <span class="hljs-string">'./GreetingHeadline.astro'</span>;
+<span class="hljs-keyword">const</span> name = <span class="hljs-string">"Astro"</span>
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Поздравительная открытка<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">GreetingHeadline</span> <span class="hljs-attr">greeting</span>=<span class="hljs-string">"Привет"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">{name}</span> /&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Надеюсь, у вас чудесный день!<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+</div></code></pre>
+<p>Вы также можете определить свои пропсы с помощью <strong>TypeScript</strong> с интерфейсом типа <strong>Props</strong>. Astro автоматически подхватит интерфейс <strong>Props</strong> в вашем блоке метаданных и выдаст предупреждения/ошибки типа. Этим входным параметрам также могут быть присвоены значения по умолчанию при деструктуризации из <em><strong>Astro.props</strong></em>.</p>
+<pre class="hljs"><code><div>---
+interface Props {
+  <span class="hljs-attr">name</span>: string;
+  greeting?: string;
+}
+
+<span class="hljs-keyword">const</span> { greeting = <span class="hljs-string">"Привет"</span>, name } = Astro.props;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>{greeting}, {name}!<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span></span>
+</div></code></pre>
+<p>Пропсам компонента могут быть присвоены значения по умолчанию, которые можно использовать, если они не указаны.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">const</span> { greeting = <span class="hljs-string">"Привет"</span>, name = <span class="hljs-string">"Астронавт"</span> } = Astro.props;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>{greeting}, {name}!<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span></span>
+</div></code></pre>
+<h2 id="%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B">Компоненты</h2>
+<h3 id="%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Структура компонента</h3>
+<p>Компонент <strong>Astro</strong> состоит из двух основных частей: Скрипта компонента и Шаблона компонента. Каждая часть выполняет свою работу, но вместе они обеспечивают структуру, которая одновременно проста в использовании и достаточно выразительна, чтобы справиться с тем, что вы захотите создать.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-comment">// Скрипт компонента (JavaScript)</span>
+---
+&lt;!-- Шаблон компонента (HTML + выражения JS) --&gt;
+</div></code></pre>
+<h3 id="%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Скрипт компонента</h3>
+<p><strong>Astro</strong> использует блок кода <em><strong>(---)</strong></em> для идентификации скрипта в вашем компоненте <strong>Astro</strong>. Если вы когда-либо писали Markdown раньше, возможно, вы уже знакомы с похожей концепцией, называемой метаданные. Идея <strong>Astro</strong> о скрипте компонента была непосредственно вдохновлена этой концепцией.</p>
+<p>Вы можете использовать скрипт компонента для написания любого кода <strong>JavaScript</strong>, необходимого для визуализации шаблона. Это может включать в себя:</p>
+<p>импорт других компонентов <strong>Astro</strong>
+импорт компонентов из других фреймворков, таких как <strong>React</strong>
+импорт данных, например файла <strong>JSON</strong>
+получение контента из <strong>API</strong> или базы данных
+создание переменных, на которые вы будете ссылаться в своем шаблоне</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> SomeAstroComponent <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/SomeAstroComponent.astro'</span>;
+<span class="hljs-keyword">import</span> SomeReactComponent <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/SomeReactComponent.jsx'</span>;
+<span class="hljs-keyword">import</span> someData <span class="hljs-keyword">from</span> <span class="hljs-string">'../data/pokemon.json'</span>;
+
+<span class="hljs-comment">// Доступ к пропсам компонента, таким как `&lt;X title="Привет, мир" /&gt;`</span>
+<span class="hljs-keyword">const</span> {title} = Astro.props;
+
+<span class="hljs-comment">// Получение внешних данных, даже из приватного API или базы данных</span>
+<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">'SOME_SECRET_API_URL/users'</span>).then(<span class="hljs-function"><span class="hljs-params">r</span> =&gt;</span> r.json());
+---
+&lt;!-- Здесь ваш шаблон! --&gt;
+</div></code></pre>
+<p>Блок кода предназначен для того, чтобы гарантировать, что написанный в нём <strong>JavaScript</strong> остаётся «изолированным». Он не попадёт в ваше фронтенд-приложение и не окажется в руках пользователя. Здесь можно безопасно писать код, который является ресурсоёмким или чувствительным (например, подключение к вашей приватной базе данных), не беспокоясь о том, что он когда-либо попадёт в браузер пользователя.</p>
+<h3 id="%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0">Шаблон компонента</h3>
+<p>Шаблон компонента следует за блоком кода и определяет вывод <strong>HTML</strong> вашего компонента.</p>
+<p>Если вы напишете здесь простой <strong>HTML</strong>, ваш компонент будет отображать этот <strong>HTML</strong> на любой странице Astro, в которую он импортирован и используется.</p>
+<p>Однако, синтаксис <strong>Astro</strong> так же поддерживает <strong>JavaScript</strong> выражения, теги <em><strong>&lt;style&gt; и &lt;script&gt;</strong></em> <strong>Astro</strong>, импортированные компоненты, и специальные директивы <strong>Astro</strong> . Данные и значения, определённые в скрипте компонента, можно использовать в шаблоне компонента для создания динамически создаваемого <strong>HTML</strong>.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-comment">// Здесь ваш скрипт компонента!</span>
+<span class="hljs-keyword">import</span> Banner <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Banner.astro'</span>;
+<span class="hljs-keyword">import</span> Avatar <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Avatar.astro'</span>;
+<span class="hljs-keyword">import</span> ReactPokemonComponent <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/ReactPokemonComponent.jsx'</span>;
+<span class="hljs-keyword">const</span> myFavoritePokemon = [<span class="hljs-comment">/* ... */</span>];
+<span class="hljs-keyword">const</span> { title } = Astro.props;
+---
+&lt;!-- Поддерживаются HTML коментарии! --&gt;
+{<span class="hljs-comment">/* Синтаксис комментариев JS также действителен! =&gt; скорее jsx */</span>}
+
+&lt;Banner /&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Привет, мир!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+
+&lt;!-- Используем пропсы и другие переменные из скрипта компонента: --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{title}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+
+&lt;!-- Осуществляем отложенный рендеринг компонента с резервным контентом для загрузки: --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Avatar</span> <span class="hljs-attr">server:defer</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">svg</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"fallback"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"generic-avatar"</span> <span class="hljs-attr">transition:name</span>=<span class="hljs-string">"avatar"</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">svg</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Avatar</span>&gt;</span></span>
+
+&lt;!-- Включаем другие компоненты пользовательского интерфейса с помощью директивы <span class="hljs-string">`client`</span>: для гидратации: --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ReactPokemonComponent</span> <span class="hljs-attr">client:visible</span> /&gt;</span></span>
+
+&lt;!-- Комбинируем HTML с выражениями JavaScript, как в JSX: --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span>
+  {myFavoritePokemon.map((data) =&gt; <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>{data.name}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>)}
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span>
+
+&lt;!-- Используем директиву шаблона для создания имён классов из нескольких строк или даже объектов! --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class:list</span>=<span class="hljs-string">{[</span>"<span class="hljs-attr">add</span>", "<span class="hljs-attr">dynamic</span>", {<span class="hljs-attr">classNames:</span> <span class="hljs-attr">true</span>}]} /&gt;</span></span>
+</div></code></pre>
+<h3 id="%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%BD%D1%8B%D0%B9-%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD">Компонентный дизайн</h3>
+<p>Компоненты спроектированы так, чтобы их можно было повторно использовать и компоновать. Вы можете использовать компоненты внутри других компонентов для создания более продвинутого пользовательского интерфейса. Например, компонент <strong>Button</strong> можно использовать для создания компонента <strong>ButtonGroup</strong>:</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Button <span class="hljs-keyword">from</span> <span class="hljs-string">'./Button.astro'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Кнопка 1"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Кнопка 2"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Кнопка 3"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div></code></pre>
+<h3 id="%D1%81%D0%BB%D0%BE%D1%82%D1%8B">Слоты</h3>
+<p><em><strong>&lt;slot /&gt;</strong></em> это заполнитель для внешнего <strong>HTML</strong>-содержимого, позволяющий вставлять дочерние элементы из других файлов в шаблон компонента.</p>
+<p>По умолчанию все дочерние элементы, переданные компоненту, будут отображаться в его <em><strong>&lt;slot /&gt;</strong></em>.</p>
+<p>Заметка</p>
+<p>В отличие от пропсов, которые являются атрибутами, передаваемыми компоненту <strong>Astro</strong>, доступными для использования во всем вашем компоненте с помощью <em><strong>Astro.props</strong></em>, слоты отображают дочерние элементы <strong>HTML</strong> там, где они написаны.</p>
+<ul>
+<li>src/components/Wrapper.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Header <span class="hljs-keyword">from</span> <span class="hljs-string">'./Header.astro'</span>;
+<span class="hljs-keyword">import</span> Logo <span class="hljs-keyword">from</span> <span class="hljs-string">'./Logo.astro'</span>;
+<span class="hljs-keyword">import</span> Footer <span class="hljs-keyword">from</span> <span class="hljs-string">'./Footer.astro'</span>;
+
+<span class="hljs-keyword">const</span> { title } = Astro.props
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"content-wrapper"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Header</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Logo</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>{title}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> /&gt;</span>  <span class="hljs-comment">&lt;!-- дочерний элемент будет здесь --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Footer</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div></code></pre>
+<ul>
+<li>src/pages/fred.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Wrapper <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Wrapper.astro'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Wrapper</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Fred's Page"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Всё о Фреде<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Вот немного информации о Фреде.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Wrapper</span>&gt;</span></span>
+</div></code></pre>
+<p>Этот шаблон является основой компонента макета <strong>Astro</strong>: целая страница <strong>HTML</strong>-контента может быть «обёрнута» тегами <strong><SomeLayoutComponent></SomeLayoutComponent></strong> и передана компоненту для отрисовки внутри определённых в нем общих элементов страницы.</p>
+<h3 id="%D0%B8%D0%BC%D0%B5%D0%BD%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D1%81%D0%BB%D0%BE%D1%82%D1%8B">Именованные слоты</h3>
+<p>Компонент <strong>Astro</strong> также может иметь именованные слоты. Это позволяет передавать в местоположение слота только элементы <strong>HTML</strong> с соответствующим именем слота.</p>
+<p>Слоты именуются с помощью атрибута <em><strong>name</strong></em>:</p>
+<ul>
+<li>src/components/Wrapper.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Header <span class="hljs-keyword">from</span> <span class="hljs-string">'./Header.astro'</span>;
+<span class="hljs-keyword">import</span> Logo <span class="hljs-keyword">from</span> <span class="hljs-string">'./Logo.astro'</span>;
+<span class="hljs-keyword">import</span> Footer <span class="hljs-keyword">from</span> <span class="hljs-string">'./Footer.astro'</span>;
+
+<span class="hljs-keyword">const</span> { title } = Astro.props
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"content-wrapper"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Header</span> /&gt;</span>
+  <span class="hljs-comment">&lt;!--  дочерние элементы с атрибутом `slot="after-header"` будут находиться здесь --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"after-header"</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Logo</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>{title}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-comment">&lt;!--  дочерние элементы без `slot`, или с `slot="default"` будут находиться здесь --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Footer</span> /&gt;</span>
+  <span class="hljs-comment">&lt;!--  дочерние элементы с атрибутом `slot="after-footer"` будут находиться здесь --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"after-footer"</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div></code></pre>
+<p>Чтобы внедрить <strong>HTML</strong>-контент в определённый слот, используйте атрибут <em><strong>slot</strong></em> в любом дочернем элементе, чтобы указать имя слота. Все остальные дочерние элементы компонента будут вставлены в стандартный (безымянный) <em><strong>&lt;slot /&gt;</strong></em>.</p>
+<ul>
+<li>src/pages/fred.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Wrapper <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Wrapper.astro'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Wrapper</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"Страница Фреда"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://my.photo/fred.jpg"</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"after-header"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Всё о Фреде<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Вот немного информации о Фреде.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"after-footer"</span>&gt;</span>Авторское право 2022<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Wrapper</span>&gt;</span>
+</span></div></code></pre>
+<ul>
+<li>*** Совет
+Используйте атрибут <em><strong>slot=&quot;my-slot&quot;</strong></em> в дочернем элементе, который вы хотите передать в соответствующий заполнитель <em><strong>&lt;slot name=&quot;my-slot&quot; /&gt;</strong></em> в вашем компоненте.</li>
+</ul>
+<p>Чтобы передать несколько HTML-элементов в заполнитель <em><strong>&lt;slot/&gt;</strong></em> компонента без обёртывающего <em><strong>&lt;div&gt;</strong></em>, используйте атрибут <em><strong>slot=&quot;&quot;</strong></em> на компоненте <a href="#fragments"><em><strong>&lt;Fragment/&gt;</strong></em></a></p>
+<ul>
+<li>src/components/CustomTable.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-comment">//  Создание пользовательской таблицы с именованными заполнителями для заголовка и тела контента</span>
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">table</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"bg-white"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">thead</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"sticky top-0 bg-white"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"header"</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">thead</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">tbody</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"[&amp;_tr:nth-child(odd)]:bg-gray-100"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"body"</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">tbody</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">table</span>&gt;</span></span>
+</div></code></pre>
+<p>Вставьте несколько строк и столбцов <strong>HTML</strong>-контента с помощью атрибута <em><strong>slot=&quot;&quot;</strong></em>, чтобы указать содержимое <em><strong>&quot;header&quot; и &quot;body&quot;</strong></em>. Отдельные элементы <strong>HTML</strong> также можно стилизовать:</p>
+<ul>
+<li>src/components/StockTable.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> CustomTable <span class="hljs-keyword">from</span> <span class="hljs-string">'./CustomTable.astro'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CustomTable</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Fragment</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"header"</span>&gt;</span> <span class="hljs-comment">&lt;!-- передаём заголовок таблицы --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">tr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">th</span>&gt;</span>Название продукта<span class="hljs-tag">&lt;/<span class="hljs-name">th</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">th</span>&gt;</span>Единицы на складе<span class="hljs-tag">&lt;/<span class="hljs-name">th</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">Fragment</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">Fragment</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"body"</span>&gt;</span> <span class="hljs-comment">&lt;!-- передаём тело таблицы --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">tr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">td</span>&gt;</span>Шлёпанцы<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">td</span>&gt;</span>64<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">tr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">td</span>&gt;</span>Ботинки<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">td</span>&gt;</span>32<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">tr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">td</span>&gt;</span>Кроссовки<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"text-red-500"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">Fragment</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">CustomTable</span>&gt;</span></span>
+</div></code></pre>
+<p>Обратите внимание, что именованные слоты должны быть непосредственными дочерними элементами компонента. Вы не можете передавать именованные слоты через вложенные элементы.</p>
+<ul>
+<li>
+<p>*** Совет</p>
+<p>Именованные слоты также можно передавать в <a href="#framework-components">компоненты UI фреймворков</a>!</p>
+</li>
+<li>
+<p>*** Заметка</p>
+<p>Невозможно динамически генерировать имя слота <strong>Astro</strong>, например, внутри функции <em><strong>map</strong></em>. Если эта функция необходима в компонентах UI-фреймворка, лучше всего генерировать эти динамические слоты внутри самого фреймворка.</p>
+</li>
+</ul>
+<h3 id="%D1%80%D0%B5%D0%B7%D0%B5%D1%80%D0%B2%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82-%D0%B4%D0%BB%D1%8F-%D1%81%D0%BB%D0%BE%D1%82%D0%BE%D0%B2">Резервный контент для слотов</h3>
+<p>Слоты также могут отображать резервный контент. Когда в слот не передаются соответствующие дочерние элементы, элемент <em><strong>&lt;slot /&gt;</strong></em> отобразит свои собственные дочерние элементы-заполнители.</p>
+<ul>
+<li>src/components/Wrapper.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Header <span class="hljs-keyword">from</span> <span class="hljs-string">'./Header.astro'</span>;
+<span class="hljs-keyword">import</span> Logo <span class="hljs-keyword">from</span> <span class="hljs-string">'./Logo.astro'</span>;
+<span class="hljs-keyword">import</span> Footer <span class="hljs-keyword">from</span> <span class="hljs-string">'./Footer.astro'</span>;
+
+<span class="hljs-keyword">const</span> { title } = Astro.props
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"content-wrapper"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Header</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Logo</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>{title}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Это резервное содержимое, если в слот не передан дочерний элемент<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">slot</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Footer</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+</div></code></pre>
+<p>Резервный контент будет отображаться только в том случае, если нет соответствующих элементов с атрибутом <em><strong>slot=&quot;name&quot;</strong></em>, передаваемых в именованный слот.</p>
+<p><strong>Astro</strong> передаст пустой слот, если элемент слота существует, но не содержит контента для передачи. Резервный контент нельзя использовать в качестве значения по умолчанию, когда передаётся пустой слот. Резервный контент отображается только тогда, когда элемент слота не найден.</p>
+<ul>
+<li>как по мне почти бессмысленно лучше уж рухнет если что... разве что если отображать и обрабатывать с базы данных... и вывести надпись данных нет но тут астро как по мне проигрывает next.js</li>
+</ul>
+<h3 id="%D0%BF%D0%B5%D1%80%D0%B5%D0%BD%D0%BE%D1%81-%D1%81%D0%BB%D0%BE%D1%82%D0%BE%D0%B2">Перенос слотов</h3>
+<p>Слоты можно передавать другим компонентам. Например, при создании вложенных макетов:</p>
+<ul>
+<li>src/layouts/BaseLayout.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"icon"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"image/svg+xml"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"/favicon.svg"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"generator"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">{Astro.generator}</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"head"</span>/&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></span>
+</div></code></pre>
+<ul>
+<li>src/layouts/HomeLayout.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> BaseLayout <span class="hljs-keyword">from</span> <span class="hljs-string">"./BaseLayout.astro"</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">BaseLayout</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"head"</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"head"</span>/&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">slot</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">BaseLayout</span>&gt;</span></span>
+</div></code></pre>
+<ul>
+<li>Результат</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"icon"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"image/svg+xml"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"/favicon.svg"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"generator"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"Astro vX.Y.Z"</span> /&gt;</span>
+    
+    <span class="hljs-comment">&lt;!-- Слот head пуст --&gt;</span>
+    
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- Слот по умолчанию пуст --&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</div></code></pre>
+<ul>
+<li>
+<p>*** Моя Заметка
+Может быть очень полезно для SEO</p>
+</li>
+<li>
+<p>*** Заметка</p>
+<p>Именованные слоты могут быть переданы другому компоненту, используя атрибуты <em><strong>name и slot</strong></em> в теге <em><strong>&lt;slot /&gt;</strong></em></p>
+</li>
+</ul>
+<p>Теперь содержимое стандартного (безымянного) слота и слота head, переданных в HomeLayout, будет перенесено в родительский компонент BaseLayout.</p>
+<ul>
+<li>src/pages/index.astro</li>
+</ul>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> HomeLayout <span class="hljs-keyword">from</span> <span class="hljs-string">"../layouts/HomeLayout.astro"</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">HomeLayout</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">title</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"head"</span>&gt;</span>Astro<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Astro<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">HomeLayout</span>&gt;</span></span>
+</div></code></pre>
+<ul>
+<li>Результат</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"icon"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"image/svg+xml"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"/favicon.svg"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"generator"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"Astro vX.Y.Z"</span> /&gt;</span> 
+    
+    <span class="hljs-comment">&lt;!-- Title "Astro" попадает сюда благодаря перенаправлению слотов --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Astro<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+    
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- Заголовок "Astro" попадает сюда как основной контент --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Astro<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</div></code></pre>
+<h3 id="html-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B">HTML-компоненты</h3>
+<p><strong>Astro</strong> поддерживает импорт и использование <em><strong>.html</strong></em> файлов в качестве компонентов или размещение этих файлов в подкаталоге <em><strong>src/pages/</strong></em> в качестве страниц. Возможно, вам захочется использовать <strong>HTML</strong>-компоненты, если вы повторно используете код с существующего сайта, созданного без фреймворка, или если вы хотите убедиться, что ваш компонент не имеет динамических функций.</p>
+<p><strong>HTML</strong>-компоненты должны содержать только валидный <strong>HTML</strong>, поэтому они лишены ключевых возможностей компонентов <strong>Astro</strong>:</p>
+<p>Они не поддерживают метаданные, импорт на стороне сервера или динамические выражения.
+Любые теги <em><strong>&lt;script&gt;</strong></em>
+остаются неупакованными, и обрабатываются, как если бы у них был атрибут <strong>is:inline</strong>.
+Они могут только ссылаться на ресурсы, которые находятся в папке <strong>public/</strong>.</p>
+<ul>
+<li>
+<p>*** Заметка</p>
+<p>В <strong>HTML</strong>-компоненте элемент <em><strong>&lt;slot /&gt;</strong></em> будет работать так же, как и в компоненте <strong>Astro</strong>. Чтобы использовать <strong>HTML Web Component Slot</strong>, добавьте атрибут <strong>is:inline</strong> к вашему элементу <em><strong>&lt;slot&gt;</strong></em>.</p>
+</li>
+</ul>
+<h2 id="%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE-%D0%B3%D0%BB%D1%83%D0%B1%D0%B6%D0%B5-%D0%B2-%D0%BA%D1%80%D0%BE%D0%BB%D0%B8%D1%87%D1%8C%D1%8E-%D0%BD%D0%BE%D1%80%D1%83">Дополнительно (глубже в кроличью нору)</h2>
+<h3 id="fragments">Fragments</h3>
+<p>Astro поддерживает <em><strong>&lt;&gt; &lt;/&gt;</strong></em> нотацию и предоставляет встроенный <Fragment /> компонент. Этот компонент может быть полезен для предотвращения использования элементов-обёрток при добавлении <a href="#setdirectives">set:*directives</a> для внедрения <strong>HTML</strong>-строки.</p>
+<p>В следующем примере текст абзаца визуализируется с использованием <Fragment /> компонента:</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">const</span> htmlString = <span class="hljs-string">'&lt;p&gt;Raw HTML content&lt;/p&gt;'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Fragment</span> <span class="hljs-attr">set:html</span>=<span class="hljs-string">{htmlString}</span> /&gt;</span></span>
+</div></code></pre>
+<h3 id="setdirectives">set:directives</h3>
+<h4 id="%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2-%D1%88%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%BE%D0%B2">Справочник директив шаблонов</h4>
+<p>Директивы шаблона — это особый вид <strong>HTML</strong>-атрибута, доступный внутри любого шаблона компонента <strong>Astro</strong> ( <strong>.astro</strong>), и некоторые из них также могут использоваться в <strong>.mdx</strong>.</p>
+<p>Директивы шаблона используются для управления поведением элемента или компонента. Директива шаблона может включать какую-либо функцию компилятора, упрощающую вашу работу (например, использование <strong>class:list</strong> вместо <strong>class</strong>). Или директива может указывать компилятору <strong>Astro</strong> на необходимость выполнения каких-либо особых действий с этим компонентом (например, <a href="#hydration">гидратации</a> с помощью <strong>client:load</strong>).</p>
+<p>В этой части описываются все директивы шаблонов, доступные вам в <strong>Astro</strong>, и принцип их работы.</p>
+<h4 id="%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0">Правила</h4>
+<p>Чтобы шаблонная директива была действительной, она должна:</p>
+<p>Включите двоеточие :в его имя, используя форму <em><strong>X:Y</strong></em>(например: <strong>client:load</strong>).
+Быть видимым для компилятора (например: ***&lt;X {...attr}&gt;***не будет работать, если <em><strong>attr</strong></em> содержит директиву).
+Некоторые директивы шаблона (но не все) могут принимать пользовательское значение:</p>
+<p><em><strong>&lt;X client:load /&gt;</strong></em>(не имеет значения)
+<em><strong>&lt;X class:list={['some-css-class']} /&gt;</strong></em>(принимает массив)
+Директива шаблона никогда не включается напрямую в конечный <strong>HTML</strong>-вывод компонента.</p>
+<h4 id="%D0%BE%D0%B1%D1%89%D0%B8%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B">Общие директивы</h4>
+<h4 id="classlist">class:list</h4>
+<p><em><strong>class:list={...}</strong></em> Принимает массив значений класса и преобразует их в строку класса. Работает на основе популярной вспомогательной библиотеки <a href="https://github.com/lukeed/clsx">clsx от @lukeed</a>.</p>
+<p><em><strong>class:list</strong></em> принимает массив из нескольких возможных типов значений:</p>
+<p><strong>string</strong>: Добавлено к элементу class
+<strong>Object</strong>: Все ключи истины добавляются к элементу class
+<strong>Array</strong>: сплющенный
+<strong>false, null, или undefined</strong>: пропущено</p>
+<pre class="hljs"><code><div>&lt;!-- This --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class:list</span>=<span class="hljs-string">{[</span> '<span class="hljs-attr">hello</span> <span class="hljs-attr">goodbye</span>', { <span class="hljs-attr">world:</span> <span class="hljs-attr">true</span> }, [ '<span class="hljs-attr">friend</span>' ] ]} /&gt;</span></span>
+&lt;!-- Becomes --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"hello goodbye world friend"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span>
+</div></code></pre>
+<h4 id="sethtml">set:html</h4>
+<p><em><strong>set:html={string}</strong></em> внедряет <strong>HTML</strong>-строку в элемент, аналогично настройке <em><strong>el.innerHTML</strong></em>.</p>
+<p>Astro не экранирует значение автоматически! Убедитесь, что вы доверяете этому значению, или экранировали его вручную перед передачей в шаблон. Если вы забудете сделать это, вы рискуете стать жертвой <a href="#xss">межсайтового скриптинга (XSS)</a>.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">const</span> rawHTMLString = <span class="hljs-string">"Hello &lt;strong&gt;World&lt;/strong&gt;"</span>
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>{rawHTMLString}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+  &lt;!-- Output: <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello <span class="hljs-symbol">&amp;lt;</span>strong<span class="hljs-symbol">&amp;gt;</span>World<span class="hljs-symbol">&amp;lt;</span>/strong<span class="hljs-symbol">&amp;gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span> --&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">set:html</span>=<span class="hljs-string">{rawHTMLString}</span> /&gt;</span></span>
+  &lt;!-- Output: <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>World<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span> --&gt;
+</div></code></pre>
+<p>Вы также можете использовать <strong>set:html</strong> , **&lt;Fragment&gt;**чтобы избежать добавления ненужного элемента-обёртки. Это может быть особенно полезно при получении <strong>HTML</strong> из <strong>CMS</strong>.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">const</span> cmsContent = <span class="hljs-keyword">await</span> fetchHTMLFromMyCMS();
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Fragment</span> <span class="hljs-attr">set:html</span>=<span class="hljs-string">{cmsContent}</span>&gt;</span>
+
+</span></div></code></pre>
+<p>**set:html={Promise&lt;string&gt;}**вставляет <strong>HTML</strong>-строку в элемент, заключенный в <strong>Promise</strong>.</p>
+<p>Это можно использовать для внедрения <strong>HTML</strong>-кода, хранящегося снаружи, например, в базе данных.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> api <span class="hljs-keyword">from</span> <span class="hljs-string">'../db/api.js'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">article</span> <span class="hljs-attr">set:html</span>=<span class="hljs-string">{api.getArticle(Astro.props.id)}</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">article</span>&gt;</span></span>
+</div></code></pre>
+<p>**set:html={Promise&lt;Response&gt;}**внедряет ответ в элемент.</p>
+<p>Это особенно полезно при использовании <strong>fetch()</strong>. Например, при извлечении старых записей из предыдущего генератора статических сайтов.</p>
+<pre class="hljs"><code><div>&lt;article <span class="hljs-keyword">set</span>:html={fetch(<span class="hljs-string">'http://example/old-posts/making-soup.html'</span>)}&gt;&lt;<span class="hljs-regexp">/article&gt;
+</span></div></code></pre>
+<p><strong>set:html</strong> Может использоваться с любым тегом и не обязательно включать HTML. Например, используйте c <strong>JSON.stringify()</strong> с <strong>&lt;script&gt;</strong> тегом, чтобы добавить схему <strong>JSON-LD</strong> на страницу.</p>
+<pre class="hljs"><code><div>&lt;script type=<span class="hljs-string">"application/ld+json"</span> <span class="hljs-keyword">set</span>:html={<span class="hljs-built_in">JSON</span>.stringify({
+  <span class="hljs-string">"@context"</span>: <span class="hljs-string">"https://schema.org/"</span>,
+  <span class="hljs-string">"@type"</span>: <span class="hljs-string">"Person"</span>,
+  <span class="hljs-attr">name</span>: <span class="hljs-string">"Houston"</span>,
+  <span class="hljs-attr">hasOccupation</span>: {
+    <span class="hljs-string">"@type"</span>: <span class="hljs-string">"Occupation"</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">"Astronaut"</span>
+  }
+})}/&gt;
+</div></code></pre>
+<h4 id="settext">set:text</h4>
+<p><strong>set:text={string}</strong> Вставляет текстовую строку в элемент, аналогично настройке <strong>el.innerText</strong>. В отличие от <strong>set:html</strong>, string передаваемое значение автоматически экранируется <strong>Astro</strong>.</p>
+<p>Это эквивалентно простой передаче переменной напрямую в выражение шаблона (например: <em><strong>&lt;div&gt;{someText}&lt;/div&gt;</strong></em>), поэтому эта директива обычно не используется.</p>
+<h4 id="clientdirectives">client:directives</h4>
+<p>Эти директивы управляют тем, как <a href="#framework-components">компоненты UI Framework</a> размещаются на странице.</p>
+<p>По умолчанию <a href="#framework-components">компонент UI Framework</a> не обрабатывается на клиенте. Если <em><strong>client:</strong></em>* директива не указана, его <strong>HTML</strong>-код отображается на странице без <strong>JavaScript</strong>.</p>
+<p>Директиву <strong>client</strong> можно использовать только в <a href="#framework-components">компоненте UI-фреймворка</a>, который напрямую импортируется в <strong>.astro</strong> компонент. Директивы <strong>Hydration</strong> не поддерживаются при использовании <a href="#dynamic-tags">динамических тегов</a> и <a href="#passing-components-to-mdx-content">пользовательских компонентов, передаваемых через components свойство</a> .</p>
+<h4 id="clientload">client:load</h4>
+<ul>
+<li>Приоритет: Высокий</li>
+<li>Полезно для: мгновенно видимых элементов пользовательского интерфейса, которые должны стать интерактивными как можно скорее.
+Загружайте и гидратируйте компонент <strong>JavaScript</strong> немедленно при загрузке страницы.</li>
+</ul>
+<pre class="hljs"><code><div>&lt;BuyButton client:load /&gt;
+</div></code></pre>
+<h4 id="clientidle">client:idle</h4>
+<ul>
+<li>Приоритет: Средний</li>
+<li>Полезно для: низкоприоритетных элементов пользовательского интерфейса, которые не требуют немедленного взаимодействия.
+Загрузите и обновите <strong>JavaScript</strong>-компонент после завершения первоначальной загрузки страницы и <a href="#requestidlecallback">requestIdleCallback</a> срабатывания события. Если ваш браузер не поддерживает , будет использоваться событие <a href="#requestidlecallback">requestIdleCallback</a> документа <strong>.load</strong></li>
+</ul>
+<pre class="hljs"><code><div>&lt;ShowHideButton client:idle /&gt;
+</div></code></pre>
+<h4 id="timeout">timeout</h4>
+<p>Добавлено в: astro@4.15.0</p>
+<p>Максимальное время ожидания (в <strong>миллисекундах</strong>) перед загрузкой компонента, даже если начальная загрузка страницы еще не завершена.</p>
+<p>Это позволяет передавать значение параметра timeout из <a href="#requestidlecallback-method">requestIdleCallback()</a> спецификации . Это означает, что вы можете отложить гидратацию для элементов пользовательского интерфейса с более низким приоритетом, обеспечивая больший контроль и гарантируя интерактивность элемента в течение заданного периода времени.</p>
+<pre class="hljs"><code><div>&lt;ShowHideButton client:idle={{<span class="hljs-attr">timeout</span>: <span class="hljs-number">500</span>}} /&gt;
+</div></code></pre>
+<h4 id="clientvisible">client:visible</h4>
+<ul>
+<li>Приоритет: низкий</li>
+<li>Полезно для: низкоприоритетных элементов пользовательского интерфейса, которые либо находятся далеко внизу страницы («ниже сгиба»), либо требуют настолько много ресурсов для загрузки, что вы бы предпочли не загружать их вообще, если пользователь никогда не увидит этот элемент.
+Загружайте и гидратируйте <strong>JavaScript</strong>-код компонента после того, как он попадает в область просмотра пользователя. <strong>IntersectionObserver</strong> Для отслеживания видимости используется внутренний механизм.</li>
+</ul>
+<pre class="hljs"><code><div>&lt;HeavyImageCarousel client:visible /&gt;
+</div></code></pre>
+<h4 id="clientvisiblerootmargin">client:visible={{rootMargin}}</h4>
+<p>Добавлено в: astro@4.1.0</p>
+<p>При необходимости значение <strong>rootMargin</strong> может быть передано базовому <strong>IntersectionObserver</strong>. Если <strong>rootMargin</strong> указано , <strong>JavaScript</strong>-компонент будет гидратироваться, когда заданное поле (в пикселях) вокруг компонента попадает в область просмотра, а не сам компонент.</p>
+<pre class="hljs"><code><div>&lt;HeavyImageCarousel client:visible={{<span class="hljs-attr">rootMargin</span>: <span class="hljs-string">"200px"</span>}} /&gt;
+</div></code></pre>
+<p>Указание rootMargin значения может сократить сдвиги макета (CLS), дать компоненту больше времени для загрузки при более медленном интернет-соединении и сделать компоненты интерактивными быстрее, повысив стабильность и скорость реагирования страницы.</p>
+<h4 id="clientmedia">client:media</h4>
+<ul>
+<li>Приоритет: низкий</li>
+<li>Полезно для: переключателей боковой панели и других элементов, которые могут быть видны только на экранах определенных размеров.
+<em><strong>client:media={string}</strong></em> загружает и обновляет компонент <strong>JavaScript</strong> после выполнения определенного медиа-запроса <strong>CSS</strong>.</li>
+</ul>
+<p>Примечание</p>
+<p>Если компонент уже скрыт и показан с помощью медиа-запроса в вашем <strong>CSS</strong>, то может быть проще просто использовать его <strong>client:visible</strong> и не передавать тот же медиа-запрос в директиву.</p>
+<pre class="hljs"><code><div>&lt;SidebarToggle client:media=<span class="hljs-string">"(max-width: 50em)"</span> /&gt;
+</div></code></pre>
+<h4 id="clientonly">client:only</h4>
+<p><em><strong>client:only={string}</strong></em> Пропускает рендеринг <strong>HTML</strong> на сервере и отображает его только на клиенте. Он действует аналогично: <em><strong>client:load</strong></em> загружает, отображает и обновляет компонент сразу после загрузки страницы.</p>
+<p>Необходимо передать корректную платформу компонента в качестве значения! Поскольку <strong>Astro</strong> не запускает компонент во время сборки на сервере, <strong>Astro</strong> не знает, какую платформу использует ваш компонент, пока вы не укажете её явно.</p>
+<pre class="hljs"><code><div>&lt;SomeReactComponent client:only=<span class="hljs-string">"react"</span> /&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">SomePreactComponent</span> <span class="hljs-attr">client:only</span>=<span class="hljs-string">"preact"</span> /&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">SomeSvelteComponent</span> <span class="hljs-attr">client:only</span>=<span class="hljs-string">"svelte"</span> /&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">SomeVueComponent</span> <span class="hljs-attr">client:only</span>=<span class="hljs-string">"vue"</span> /&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">SomeSolidComponent</span> <span class="hljs-attr">client:only</span>=<span class="hljs-string">"solid-js"</span> /&gt;</span></span>
+</div></code></pre>
+<h4 id="%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B6%D0%B0%D0%B5%D0%BC%D0%BE%D0%B3%D0%BE-%D1%81%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%BC%D0%BE%D0%B3%D0%BE">Отображение загружаемого содержимого</h4>
+<p>Для компонентов, которые отображаются только на клиенте, также можно отображать резервный контент во время загрузки. Используйте <em><strong>slot=&quot;fallback&quot;</strong></em> этот параметр для любого дочернего элемента, чтобы создать контент, который будет отображаться только до тех пор, пока ваш клиентский компонент не станет доступен:</p>
+<pre class="hljs"><code><div>&lt;ClientComponent client:only=<span class="hljs-string">"vue"</span>&gt;
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"fallback"</span>&gt;</span>Loading<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+&lt;<span class="hljs-regexp">/ClientComponent&gt;
+</span></div></code></pre>
+<h4 id="%D0%B8%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%81%D0%BA%D0%B8%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B">Индивидуальные клиентские директивы</h4>
+<p>Начиная с версии Astro 2.6.0 интеграции также позволяют добавлять пользовательские <em><strong>client:*</strong></em> директивы для изменения того, как и когда следует гидратировать компоненты.</p>
+<p>Посетите часть <a href="#addclientdirective-option">addClientDirectiveAPI</a> , чтобы узнать больше о создании пользовательской клиентской директивы.</p>
+<h4 id="%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0">Директивы сервера</h4>
+<p>Эти директивы управляют отображением компонентов серверного острова.</p>
+<h4 id="serverdefer">server:defer</h4>
+<p>Директива <em><strong>server:defer</strong></em> преобразует компонент в серверный остров, заставляя его отображаться по требованию, вне области отображения остальной части страницы.</p>
+<p>Подробнее об использовании компонентов серверного острова <a href="#server-islands">см.</a></p>
+<pre class="hljs"><code><div>&lt;Avatar server:defer /&gt;
+</div></code></pre>
+<h4 id="%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B-%D0%BF%D0%BE-%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82%D1%83-%D0%B8-%D1%81%D1%82%D0%B8%D0%BB%D1%8E">Директивы по скрипту и стилю</h4>
+<p>Эти директивы можно использовать только в <strong>HTML</strong> &lt;script&gt; и &lt;style&gt; тегах для управления тем, как клиентский <strong>JavaScript</strong> и <strong>CSS</strong> обрабатываются на странице.</p>
+<h4 id="isglobal">is:global</h4>
+<p>По умолчанию <strong>Astro</strong> автоматически применяет &lt;style&gt; <strong>CSS</strong>-правила к компоненту. Вы можете отключить это поведение с помощью <em><strong>is:global</strong></em> директивы.</p>
+<p><em><strong>is:global</strong></em> При включении компонента содержимое тега &lt;style&gt; применяется глобально на странице. Это отключает систему <strong>CSS</strong>-областей действия <strong>Astro</strong>. Это эквивалентно заключению всех селекторов в &lt;style&gt; тег c <em><strong>:global()</strong></em>.</p>
+<p>Вы можете объединить &lt;style&gt; и &lt;style is:global&gt; в одном компоненте, чтобы создать некоторые глобальные правила стиля, сохраняя при этом область действия большей части <strong>CSS</strong> вашего компонента.</p>
+<p>Более подробную информацию о работе глобальных стилей см . на странице <a href="#global-styles">«Стилизация и CSS»</a> .</p>
+<pre class="hljs"><code><div>&lt;style is:global&gt;
+  body a { <span class="hljs-attr">color</span>: red; }
+&lt;<span class="hljs-regexp">/style&gt;
+</span></div></code></pre>
+<h4 id="isinline">is:inline</h4>
+<p>По умолчанию <strong>Astro</strong> обрабатывает, оптимизирует и объединяет все теги &lt;script&gt; и , &lt;style&gt; которые видит на странице. Вы можете отключить это поведение с помощью <em><strong>is:inline</strong></em> директивы.</p>
+<p><em><strong>is:inline</strong></em> <strong>Astro</strong> указывает оставить тег &lt;script&gt; или &lt;style&gt; как есть в конечном <strong>HTML</strong>-коде. Содержимое не будет обработано, оптимизировано или упаковано. Это ограничивает некоторые функции <strong>Astro</strong>, такие как импорт пакета <strong>npm</strong> или использование языка компиляции в <strong>CSS</strong>, например, <strong>Sass</strong>.</p>
+<p>Директива <em><strong>is:inline</strong></em> означает, что &lt;style&gt; и &lt;script&gt; теги:</p>
+<ul>
+<li>
+<p>Не будет объединено во внешний файл. Это означает, что атрибуты, <a href="#defer">например defer</a> , управляющие загрузкой внешнего файла, не будут иметь никакого эффекта.</p>
+</li>
+<li>
+<p>Дедупликация не производится — элемент будет появляться столько раз, сколько он отображается.</p>
+</li>
+<li>
+<p>Ссылки <em><strong>// import</strong></em> не будут разрешены относительно файла <em><strong>.@import url().astro</strong></em></p>
+</li>
+<li>
+<p>Будет отображен в конечном выходном <strong>HTML</strong>-коде именно там, где он был создан.</p>
+</li>
+<li>
+<p>Стили будут глобальными и не будут ограничены компонентом.</p>
+</li>
+<li>
+<p>*** Осторожность</p>
+</li>
+</ul>
+<p>Эта is:inline директива подразумевается всякий раз, когда в теге используется любой атрибут, кроме . src Единственным исключением является использование директивы в теге , которое не подразумевает автоматически .</p>
+<pre class="hljs"><code><div>&lt;script&gt;&lt;style&gt;define:vars&lt;style&gt;is:inline
+</div></code></pre>
+<pre class="hljs"><code><div>&lt;style is:inline&gt;
+  <span class="hljs-comment">/* inline: relative &amp; npm package imports are not supported. */</span>
+  @<span class="hljs-keyword">import</span> <span class="hljs-string">'/assets/some-public-styles.css'</span>;
+  span { <span class="hljs-attr">color</span>: green; }
+&lt;<span class="hljs-regexp">/style&gt;
+</span></div></code></pre>
+<pre class="hljs"><code><div>&lt;script is:inline&gt;
+  <span class="hljs-comment">/* inline: relative &amp; npm package imports are not supported. */</span>
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'I am inlined right here in the final output HTML.'</span>);
+&lt;<span class="hljs-regexp">/script&gt;
+</span></div></code></pre>
+<p>Посмотрите, как работают <a href="#client-side-scripts">клиентские скрипты</a> в компонентах Astro.</p>
+<h4 id="definevars">define:vars</h4>
+<p><em><strong>define:vars={...}</strong></em> Может передавать серверные переменные из <em><strong>frontmatter</strong></em> вашего компонента в клиент &lt;script&gt; или &lt;style&gt; теги. Поддерживаются любые <strong>JSON</strong>-сериализуемые переменные <em><strong>frontmatter</strong></em>, в том числе <strong>props</strong> переданные в ваш компонент через <em><strong>Astro.props</strong></em>. Значения сериализуются с помощью <em><strong>JSON.stringify()</strong></em>.</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">const</span> foregroundColor = <span class="hljs-string">"rgb(221 243 228)"</span>;
+<span class="hljs-keyword">const</span> backgroundColor = <span class="hljs-string">"rgb(24 121 78)"</span>;
+<span class="hljs-keyword">const</span> message = <span class="hljs-string">"Astro is awesome!"</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">define:vars</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">textColor:</span> <span class="hljs-attr">foregroundColor</span>, <span class="hljs-attr">backgroundColor</span> }}&gt;</span><span class="css">
+  <span class="hljs-selector-tag">h1</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">var</span>(--backgroundColor);
+    <span class="hljs-attribute">color</span>: <span class="hljs-built_in">var</span>(--textColor);
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span>
+
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">define:vars</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">message</span> }}&gt;</span>
+  alert(message);
+<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+</div></code></pre>
+<ul>
+<li>*** Осторожность</li>
+</ul>
+<p>Использование <em><strong>define:vars</strong></em> тега &lt;script&gt; подразумевает <em><strong>is:inline</strong></em> директиву , что означает, что ваши скрипты не будут объединены, а будут встроены непосредственно в <strong>HTML</strong>.</p>
+<p>Это связано с тем, что когда <strong>Astro</strong> объединяет скрипт, он включает и запускает его один раз, даже если вы включаете компонент, содержащий скрипт, несколько раз на одной странице. <em><strong>define:vars</strong></em> требует повторного запуска скрипта с каждым набором значений, поэтому вместо этого <strong>Astro</strong> создает встроенный скрипт.</p>
+<p>Для скриптов попробуйте передавать переменные в скрипты вручную .</p>
+<h4 id="%D1%80%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B4%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B">Расширенные директивы</h4>
+<h4 id="israw">is:raw</h4>
+<p><em><strong>is:raw</strong></em> указывает компилятору <strong>Astro</strong> обрабатывать все дочерние элементы этого элемента как текст. Это означает, что весь специальный синтаксис шаблонов <strong>Astro</strong> будет игнорироваться внутри этого компонента.</p>
+<p>Например, если у вас есть пользовательский компонент <strong>Katex</strong>, который преобразует текст в <strong>HTML</strong>, вы можете попросить пользователей сделать следующее:</p>
+<pre class="hljs"><code><div>---
+<span class="hljs-keyword">import</span> Katex <span class="hljs-keyword">from</span> <span class="hljs-string">'../components/Katex.astro'</span>;
+---
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Katex</span> <span class="hljs-attr">is:raw</span>&gt;</span>Some conflicting {syntax} here<span class="hljs-tag">&lt;/<span class="hljs-name">Katex</span>&gt;</span></span>
+</div></code></pre>
+<h3 id="framework-components">framework-components</h3>
+<p>! NF!!!!</p>
+<h3 id="dynamic-tags">dynamic-tags</h3>
+<h3 id="passing-components-to-mdx-content">passing-components-to-mdx-content</h3>
+<h3 id="requestidlecallback">requestIdleCallback</h3>
+<h3 id="requestidlecallback-method">requestIdleCallback-method</h3>
+<h3 id="addclientdirective-option">addclientdirective-option</h3>
+<h3 id="server-islands">server-islands</h3>
+<h3 id="global-styles">global-styles</h3>
+<h3 id="defer">defer</h3>
+<h3 id="client-side-scripts">client-side-scripts</h3>
+<h3 id="hydration">hydration</h3>
+<p>Термин &quot;гидратироваться&quot; (hydrate / hydration) в контексте Astro и современных фреймворков (таких как React, Vue, Svelte) означает процесс превращения статического, неинтерактивного HTML-кода, который был сгенерирован на сервере, в полностью интерактивный, работающий клиентский компонент с помощью JavaScript.</p>
+<p>Вот подробное объяснение того, что подразумевается под этим словом в приведенных вами примерах:</p>
+<p>Что такое &quot;гидратация&quot; (Hydration)?
+В мире разработки веб-приложений гидратация — это ключевой этап, следующий за серверным рендерингом (SSR) или генерацией статических сайтов (SSG).
+Представьте, что вы строите дом. Сначала вы возводите каркас и стены (это статический HTML, который виден сразу). Затем вы подключаете электричество, водопровод и устанавливаете розетки и выключатели (это JavaScript, который делает дом функциональным).</p>
+<p>Гидратация — это процесс подключения &quot;электричества&quot; к вашему HTML.</p>
+<p>Как это работает в примере с Astro</p>
+<p>В вашем примере: &lt;HeavyImageCarousel client:visible={{rootMargin: &quot;200px&quot;}} /&gt;</p>
+<p>На сервере: Когда пользователь запрашивает страницу, Astro отправляет готовый, но неактивный HTML-код для HeavyImageCarousel. Пользователь видит изображение-заглушку или статический макет карусели сразу, но кнопки &quot;вперед/назад&quot; пока не работают. JavaScript, необходимый для их работы, еще не загружен или не запущен.</p>
+<p>На клиенте (в браузере): Когда браузер пользователя загружает JavaScript-файл для этого компонента и видит директиву client:visible, он начинает процесс гидратации.</p>
+<p>Гидратация: JavaScript берет существующий HTML, &quot;прикрепляет&quot; к нему все обработчики событий (слушатели кликов, свайпов) и инициализирует внутреннее состояние компонента.</p>
+<p>Теперь карусель становится полностью функциональной и интерактивной.</p>
+<p>Что означает client:visible и rootMargin в этом контексте</p>
+<p>Директива client:visible указывает Astro отложить процесс гидратации до тех пор, пока компонент не попадет в поле зрения пользователя (вьюпорт). Это техника называется &quot;ленивой гидратацией&quot; (lazy hydration) или &quot;частичной гидратацией&quot; (partial hydration).</p>
+<p>Слово &quot;гидратироваться&quot; здесь означает:</p>
+<p>&quot;Запустить и применить клиентский JavaScript к этому компоненту, чтобы сделать его интерактивным&quot;.</p>
+<p>Пример с rootMargin:
+&lt;HeavyImageCarousel client:visible /&gt;: Компонент гидратируется (становится активным), когда его верхний край достигает видимой части экрана.</p>
+<p>&lt;HeavyImageCarousel client:visible={{rootMargin: &quot;200px&quot;}} /&gt;: Компонент гидратируется (становится активным), когда до его появления на экране остается еще 200 пикселей прокрутки.</p>
+<p>Зачем это нужно?</p>
+<p>Как указано в вашем тексте, это делается для оптимизации:</p>
+<p>Уменьшение CLS (Cumulative Layout Shift): Компонент загружается заранее и не вызывает резких &quot;прыжков&quot; страницы при появлении.</p>
+<p>Ускорение загрузки страницы: Браузеру не нужно загружать и запускать тяжелый JavaScript сразу для всех компонентов страницы. Он гидратирует только те, которые скоро понадобятся пользователю.</p>
+<p>По сути, &quot;гидратироваться&quot; — это технический термин, описывающий оживление статической веб-страницы с помощью JavaScript.</p>
+<h3 id="xss">XSS</h3>
+<p>межсайтовый скриптинг</p>
+<h1 id="%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D1%8B-%D0%B4%D0%BB%D1%8F-%D1%81%D1%82%D0%B0%D1%82%D1%8C%D0%B8">Материалы для статьи</h1>
+<p><a href="https://docs.astro.build/ru/basics/astro-components/">Астро документация</a></p>
+<p><a href="https://docs.astro.build/ru/reference/directives-reference/">set:directives</a></p>
+<p><a href="https://docs.astro.build/ru/reference/astro-syntax/">Astro-syntax</a></p>
+<p><a href="https://owasp.org/www-community/attacks/xss/">XSS</a></p>
+<p><a href="https://docs.astro.build/ru/guides/framework-components/">Framework-components</a></p>
+<p><a href="https://docs.astro.build/en/reference/astro-syntax/#dynamic-tags">dynamic-tags</a></p>
+<p><a href="https://docs.astro.build/en/guides/integrations-guide/mdx/#passing-components-to-mdx-content">passing-components-to-mdx-content</a></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback">requestIdleCallback</a></p>
+<p><a href="https://www.w3.org/TR/requestidlecallback/#the-requestidlecallback-method">requestidlecallback-method</a></p>
+<p><a href="https://docs.astro.build/en/reference/integrations-reference/#addclientdirective-option">addclientdirective-option</a></p>
+<p><a href="https://docs.astro.build/en/guides/server-islands/">server-islands</a></p>
+<p><a href="https://docs.astro.build/en/guides/styling/#global-styles">global-styles</a></p>
+<p><a href="https://javascript.info/script-async-defer">defer</a></p>
+<p><a href="https://docs.astro.build/en/guides/client-side-scripts/">client-side-scripts</a></p>
+
+</body>
+</html>
