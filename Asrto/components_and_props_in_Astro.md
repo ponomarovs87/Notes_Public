@@ -3868,7 +3868,7 @@ const content = marked.parse(markdown);
 По сути, "гидратироваться" — это технический термин, описывающий оживление статической веб-страницы с помощью JavaScript.
 
 ### XSS
-межсайтовый скриптинг 
+[межсайтовый скриптинг ](https://owasp.org/www-community/attacks/xss/)
 
 # Материалы для статьи
 [Астро документация](https://docs.astro.build/ru/basics/astro-components/)
